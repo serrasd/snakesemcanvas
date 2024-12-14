@@ -1,9 +1,9 @@
 const gameContainer = document.querySelector(".game-container")
 
-const audio = new Audio('../assets/audio/audio.mp3')
-const audio2 = new Audio('../assets/audio/easyandmedium.mp3')
-const audio3 = new Audio('../assets/audio/gameover.mp3')
-const audio4 = new Audio('../assets/audio/hardmode.mp3')
+const audio = new Audio('./assets/audio/audio.mp3')
+const audio2 = new Audio('./assets/audio/easyandmedium.mp3')
+const audio3 = new Audio('./assets/audio/gameover.mp3')
+const audio4 = new Audio('./assets/audio/hardmode.mp3')
 
 const pontuacao = document.querySelector(".valor-pontuacao")
 const pontuacaoFinal = document.querySelector(".pontuacao-final > span")
@@ -26,9 +26,17 @@ const numeroAleatorio = (min, max) => {
 }
 
 const posicaoAleatoria = () => {
-    const numero = numeroAleatorio(0, gameContainer.offsetWidth - tamanhoQuadrado)
-    return Math.round(numero / tamanhoQuadrado) * tamanhoQuadrado
-}
+    let x, y, posicaoOcupada;
+
+    do {
+        x = Math.round(numeroAleatorio(0, gameContainer.offsetWidth - tamanhoQuadrado) / tamanhoQuadrado) * tamanhoQuadrado;
+        y = Math.round(numeroAleatorio(0, gameContainer.offsetHeight - tamanhoQuadrado) / tamanhoQuadrado) * tamanhoQuadrado;
+
+        posicaoOcupada = snake.some((segmento) => segmento.x === x && segmento.y === y);
+    } while (posicaoOcupada);
+
+    return { x, y };
+};
 
 const corAleatoria = () => {
     const red = numeroAleatorio(0, 255)
@@ -37,25 +45,24 @@ const corAleatoria = () => {
     return `rgb(${red}, ${green}, ${blue})`
 }
 
-const comida = {
-    x: posicaoAleatoria(),
-    y: posicaoAleatoria(),
+let comida = {
+    ...posicaoAleatoria(),
     color: corAleatoria()
-}
+};
 
 let direcao, loopId
 
 const desenharComida = () => {
-    let comidaDiv = document.querySelector(".comida")
+    let comidaDiv = document.querySelector(".comida");
     if (!comidaDiv) {
-        comidaDiv = document.createElement("div")
-        comidaDiv.className = "comida"
-        gameContainer.appendChild(comidaDiv)
+        comidaDiv = document.createElement("div");
+        comidaDiv.className = "comida";
+        gameContainer.appendChild(comidaDiv);
     }
-    comidaDiv.style.top = `${comida.y}px`
-    comidaDiv.style.left = `${comida.x}px`
-    comidaDiv.style.backgroundColor = comida.color
-}
+    comidaDiv.style.top = `${comida.y}px`;
+    comidaDiv.style.left = `${comida.x}px`;
+    comidaDiv.style.backgroundColor = comida.color;
+};
 
 const desenharSnake = () => {
     gameContainer.innerHTML = ""
@@ -71,12 +78,28 @@ const desenharSnake = () => {
 
 let comeuComida = false
 
+const mordida = () => {
+    const head = snake[snake.length - 1];
+
+    if (head.x === comida.x && head.y === comida.y) {
+        incrementarPontuacao();
+        audio.play();
+
+        comida = {
+            ...posicaoAleatoria(),
+            color: corAleatoria()
+        };
+
+        comeuComida = true;
+    }
+};
+
 const moverSnake = () => {
     if (!direcao) return
 
     const head = snake[snake.length - 1]
     let novoHead = { ...head }
-    
+
     audio2.play()
 
     if (velocidade === 100) {
@@ -86,7 +109,6 @@ const moverSnake = () => {
         audio2.play()
         audio4.pause()
     }
-
 
     if (direcao === "right") novoHead = { x: head.x + tamanhoQuadrado, y: head.y }
     if (direcao === "left") novoHead = { x: head.x - tamanhoQuadrado, y: head.y }
@@ -103,32 +125,16 @@ const moverSnake = () => {
 
     snake.push(novoHead)
 
-    comeuComida = head.x === comida.x && head.y === comida.y
-
     if (!comeuComida) {
         snake.shift()
-    }
-}
-
-const mordida = () => {
-    const head = snake[snake.length - 1]
-
-    if (head.x === comida.x && head.y === comida.y) {
-        incrementarPontuacao()
-        audio.play()
-
-        comida.x = posicaoAleatoria()
-        comida.y = posicaoAleatoria()
-        comida.color = corAleatoria()
-       
-        snake.push({ x: head.x, y: head.y })
-
+    } else {
+        comeuComida = false
     }
 }
 
 const colisao = () => {
     const head = snake[snake.length - 1]
-    const body = comeuComida ? snake.slice(0, -2) : snake.slice(0, -1)
+    const body = snake.slice(0, -1)
 
     const colisaoSnake = body.some(
         (posicao) => posicao.x === head.x && posicao.y === head.y
@@ -136,6 +142,7 @@ const colisao = () => {
 
     if (colisaoSnake) gameOver()
 }
+
 
 let audio3Tocou = false
 
