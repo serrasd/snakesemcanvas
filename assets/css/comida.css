@@ -1,0 +1,7 @@
+.comida {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #f00;
+}

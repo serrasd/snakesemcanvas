@@ -1,0 +1,11 @@
+.snake-head, .snake-body {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #0f0;
+    box-shadow: 0 0 5px #0f0;
+  }
+
+  .snake-body {
+    background-color: #0c0;
+  }
