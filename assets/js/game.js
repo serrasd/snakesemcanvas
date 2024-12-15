@@ -1,10 +1,7 @@
+import { corAleatoria, numeroAleatorio } from './utils.js'
+import { audio, audio2, audio3, audio4 } from './audio.js'
+
 const gameContainer = document.querySelector(".game-container")
-
-const audio = new Audio('./assets/audio/audio.mp3')
-const audio2 = new Audio('./assets/audio/easyandmedium.mp3')
-const audio3 = new Audio('./assets/audio/gameover.mp3')
-const audio4 = new Audio('./assets/audio/hardmode.mp3')
-
 const pontuacao = document.querySelector(".valor-pontuacao")
 const pontuacaoFinal = document.querySelector(".pontuacao-final > span")
 const menu = document.querySelector(".menu")
@@ -21,28 +18,17 @@ const incrementarPontuacao = () => {
     pontuacao.innerText = +pontuacao.innerText + 10
 }
 
-const numeroAleatorio = (min, max) => {
-    return Math.round(Math.random() * (max - min) + min)
-}
-
 const posicaoAleatoria = () => {
     let x, y, posicaoOcupada
 
     do {
-        x = Math.round(numeroAleatorio(0, gameContainer.offsetWidth - tamanhoQuadrado) / tamanhoQuadrado) * tamanhoQuadrado
-        y = Math.round(numeroAleatorio(0, gameContainer.offsetHeight - tamanhoQuadrado) / tamanhoQuadrado) * tamanhoQuadrado
+        x = Math.round(numeroAleatorio(0, gameContainer.offsetWidth - 30) / 30) * 30
+        y = Math.round(numeroAleatorio(0, gameContainer.offsetHeight - 30) / 30) * 30
 
         posicaoOcupada = snake.some((segmento) => segmento.x === x && segmento.y === y)
     } while (posicaoOcupada)
 
     return { x, y }
-}
-
-const corAleatoria = () => {
-    const red = numeroAleatorio(0, 255)
-    const green = numeroAleatorio(0, 255)
-    const blue = numeroAleatorio(0, 255)
-    return `rgb(${red}, ${green}, ${blue})`
 }
 
 let comida = {
@@ -51,6 +37,7 @@ let comida = {
 }
 
 let direcao, loopId
+let comeuComida = false
 
 const desenharComida = () => {
     let comidaDiv = document.querySelector(".comida")
@@ -75,8 +62,6 @@ const desenharSnake = () => {
         gameContainer.appendChild(snakeDiv)
     })
 }
-
-let comeuComida = false
 
 const mordida = () => {
     const head = snake[snake.length - 1]
@@ -210,5 +195,3 @@ botao.addEventListener("click", () => {
     direcao = undefined
     gameLoop()
 })
-
-
