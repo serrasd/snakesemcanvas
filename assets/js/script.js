@@ -26,17 +26,17 @@ const numeroAleatorio = (min, max) => {
 }
 
 const posicaoAleatoria = () => {
-    let x, y, posicaoOcupada;
+    let x, y, posicaoOcupada
 
     do {
-        x = Math.round(numeroAleatorio(0, gameContainer.offsetWidth - tamanhoQuadrado) / tamanhoQuadrado) * tamanhoQuadrado;
-        y = Math.round(numeroAleatorio(0, gameContainer.offsetHeight - tamanhoQuadrado) / tamanhoQuadrado) * tamanhoQuadrado;
+        x = Math.round(numeroAleatorio(0, gameContainer.offsetWidth - tamanhoQuadrado) / tamanhoQuadrado) * tamanhoQuadrado
+        y = Math.round(numeroAleatorio(0, gameContainer.offsetHeight - tamanhoQuadrado) / tamanhoQuadrado) * tamanhoQuadrado
 
-        posicaoOcupada = snake.some((segmento) => segmento.x === x && segmento.y === y);
-    } while (posicaoOcupada);
+        posicaoOcupada = snake.some((segmento) => segmento.x === x && segmento.y === y)
+    } while (posicaoOcupada)
 
-    return { x, y };
-};
+    return { x, y }
+}
 
 const corAleatoria = () => {
     const red = numeroAleatorio(0, 255)
@@ -48,21 +48,21 @@ const corAleatoria = () => {
 let comida = {
     ...posicaoAleatoria(),
     color: corAleatoria()
-};
+}
 
 let direcao, loopId
 
 const desenharComida = () => {
-    let comidaDiv = document.querySelector(".comida");
+    let comidaDiv = document.querySelector(".comida")
     if (!comidaDiv) {
-        comidaDiv = document.createElement("div");
-        comidaDiv.className = "comida";
-        gameContainer.appendChild(comidaDiv);
+        comidaDiv = document.createElement("div")
+        comidaDiv.className = "comida"
+        gameContainer.appendChild(comidaDiv)
     }
-    comidaDiv.style.top = `${comida.y}px`;
-    comidaDiv.style.left = `${comida.x}px`;
-    comidaDiv.style.backgroundColor = comida.color;
-};
+    comidaDiv.style.top = `${comida.y}px`
+    comidaDiv.style.left = `${comida.x}px`
+    comidaDiv.style.backgroundColor = comida.color
+}
 
 const desenharSnake = () => {
     gameContainer.innerHTML = ""
@@ -79,20 +79,20 @@ const desenharSnake = () => {
 let comeuComida = false
 
 const mordida = () => {
-    const head = snake[snake.length - 1];
+    const head = snake[snake.length - 1]
 
     if (head.x === comida.x && head.y === comida.y) {
-        incrementarPontuacao();
-        audio.play();
+        incrementarPontuacao()
+        audio.play()
 
         comida = {
             ...posicaoAleatoria(),
             color: corAleatoria()
-        };
+        }
 
-        comeuComida = true;
+        comeuComida = true
     }
-};
+}
 
 const moverSnake = () => {
     if (!direcao) return
@@ -143,16 +143,28 @@ const colisao = () => {
     if (colisaoSnake) gameOver()
 }
 
-
 let audio3Tocou = false
 
-const gameOver = () => {
-    if (!audio3Tocou) {
-        audio3.play()
-        audio3Tocou = true
-        audio3.onended = () => {
-            audio3.pause()
-            audio3.currentTime = 0
+const tamanhoCampo = (gameContainer.offsetWidth / tamanhoQuadrado) * (gameContainer.offsetHeight / tamanhoQuadrado)
+
+const verificarVitoria = () => {
+    if (snake.length >= tamanhoCampo) {
+        clearTimeout(loopId)
+        gameOver(true)
+    }
+}
+
+const gameOver = (vitoria = false) => {
+    if (vitoria) {
+        alert("Parabéns! Você venceu o jogo!")
+    } else {
+        if (!audio3Tocou) {
+            audio3.play()
+            audio3Tocou = true
+            audio3.onended = () => {
+                audio3.pause()
+                audio3.currentTime = 0
+            }
         }
     }
     audio2.pause()
@@ -171,7 +183,8 @@ const gameLoop = () => {
     moverSnake()
     mordida()
     desenharSnake()
-    colisao() 
+    colisao()
+    verificarVitoria()
     loopId = setTimeout(gameLoop, velocidade)
 }
 
