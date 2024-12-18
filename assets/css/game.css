@@ -2,21 +2,18 @@
     background-color: black;
     border: 1px solid white;
     position: relative;
-    width: 600px;
-    height: 600px;
-    overflow: hidden;
 }
 
 .pontuacao {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-size: 1.8rem;
+    font-size: 1.2rem;
 }
 
 .valor-pontuacao {
     font-weight: 700;
-    font-size: 4.5rem;
+    font-size: 2.0rem;
     display: block;
     margin-top: -10px;
 }
@@ -41,7 +38,7 @@
 }
 
 .dificuldade {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-family: 'Poppins', sans-serif;
     padding: 5px 10px;
     border-radius: 100px;
