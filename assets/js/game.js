@@ -184,6 +184,7 @@ document.addEventListener("keydown", ({ key }) => {
 
 dificuldadeSelect.addEventListener("change", (event) => {
     velocidade = Number(event.target.value)
+    dificuldadeSelect.blur();
 })
 
 botao.addEventListener("click", () => {
