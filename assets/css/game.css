@@ -1,3 +1,14 @@
+.stats {
+    display: flex;
+    gap: 250px;
+}
+
+.stats-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .game-container {
     background-color: black;
     border: 1px solid white;
